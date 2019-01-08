@@ -1,27 +1,34 @@
 <template>
-  <div ref="drag" class="gui-h5-dragbox" :style="style">
-    <div class="gui-h5-drag-resize gui-h5-drag-resize-rotate"></div>
-    <div class="gui-h5-drag-resize gui-h5-drag-translate" @mousedown="onMoveStart"></div>
-    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-n" @mousedown="evt=>{onResizeStart(evt,'n')}"></div>
-    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-w" @mousedown="evt=>{onResizeStart(evt,'w')}"></div>
-    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-e" @mousedown="evt=>{onResizeStart(evt,'e')}"></div>
-    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-s" @mousedown="evt=>{onResizeStart(evt,'s')}"></div>
-    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-nw" @mousedown="evt=>{onResizeStart(evt,'nw')}"></div>
-    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-ne" @mousedown="evt=>{onResizeStart(evt,'ne')}"></div>
-    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-sw" @mousedown="evt=>{onResizeStart(evt,'sw')}"></div>
-    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-se" @mousedown="evt=>{onResizeStart(evt,'se')}"></div>
-    <div class="gui-h5-drag-resize gui-h5-drag-resize-rotate" @mousedown="onRotateStart"></div>
+  <div ref="drag" class="gui-h5-dragbox" :style="style" @click.stop="onClick">
+    <div class="gui-h5-drag-resize gui-h5-drag-translate" @mousedown.stop="onMoveStart"></div>
+    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-n" @mousedown.stop="evt=>{onResizeStart(evt,'n')}"></div>
+    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-w" @mousedown.stop="evt=>{onResizeStart(evt,'w')}"></div>
+    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-e" @mousedown.stop="evt=>{onResizeStart(evt,'e')}"></div>
+    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-s" @mousedown.stop="evt=>{onResizeStart(evt,'s')}"></div>
+    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-nw" @mousedown.stop="evt=>{onResizeStart(evt,'nw')}"></div>
+    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-ne" @mousedown.stop="evt=>{onResizeStart(evt,'ne')}"></div>
+    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-sw" @mousedown.stop="evt=>{onResizeStart(evt,'sw')}"></div>
+    <div class="gui-h5-drag-resize gui-h5-drag-point gui-h5-drag-resize-se" @mousedown.stop="evt=>{onResizeStart(evt,'se')}"></div>
+    <div class="gui-h5-drag-resize gui-h5-drag-resize-rotate" @mousedown.stop="onRotateStart"></div>
   </div>
 </template>
 <script>
   //draggable="true" @dragstart="onDragStart" @drag="onDrag" @dragend="onDragEnd"
   export default {
-    mounted() {},
+    props:{
+        value:{
+          type:Object,
+          required:true
+        }
+    },
+    mounted() {
+     this.init();
+    },
     data() {
       return {
         rect: {
-          left: 50,
-          top: 0,
+          x: 50,
+          y: 0,
           width: 100,
           height: 100,
           rotate: 0
@@ -31,25 +38,37 @@
     },
     computed: {
       style() {
+        const left=this.rect.x-this.rect.width/2;
+        const top=this.rect.y-this.rect.height/2;
         return {
-          left: this.rect.left + "px",
-          top: this.rect.top + "px",
+          left: left + "px",
+          top: top + "px",
           width: this.rect.width + "px",
           height: this.rect.height + "px",
           transform: 'rotateZ('+this.rect.rotate+'deg)'
         };
       }
     },
+    watch:{
+      value(v,o){
+        this.init();
+      }
+    },
     methods: {
+      init(){
+         const {x,y,width,height,rotate} = this.value.propertys;
+         this.rect={x,y,width,height,rotate};
+      },
       onMoveStart(evt) {
         const distance = {
-          x: evt.pageX - this.rect.left,
-          y: evt.pageY - this.rect.top
+          x: evt.pageX - this.rect.x,
+          y: evt.pageY - this.rect.y
         }
         const context = this;
         document.onmousemove = evt => {
-          context.rect.left = evt.pageX - distance.x;
-          context.rect.top = evt.pageY - distance.y;
+          context.rect.x = evt.pageX - distance.x;
+          context.rect.y = evt.pageY - distance.y;
+          context.update();
         };
         document.onmouseup = evt => {
           document.onmousemove = document.onmouseup = null;
@@ -57,40 +76,31 @@
       },
       onResizeStart(evt, dir) {
         const start = {
-          x: evt.pageX,
-          y: evt.pageY,
-          left: this.rect.left,
-          top: this.rect.top,
-          width: this.rect.width,
-          height: this.rect.height
+         ...this.rect
         }
         const point = {
-          x: this.rect.left + this.rect.width / 2,
-          y: this.rect.top + this.rect.height / 2
+          x: evt.pageX,
+          y: evt.pageY
         }
         const context = this;
         document.onmousemove = evt => {
-          const dx = evt.pageX - start.x;
-          const dy = evt.pageY - start.y;
+          const dx = evt.pageX - point.x;
+          const dy = evt.pageY - point.y;
           if (dir.indexOf('n') > -1) {
-            context.rect.top = start.top + dy;
+            //context.rect.y = start.y + dy/2;
             context.rect.height = start.height - dy;
           }
           if (dir.indexOf('s') > -1) {
             context.rect.height = start.height + dy;
           }
           if (dir.indexOf('w') > -1) {
-            context.rect.left = start.left + dx;
+            //context.rect.x = start.x + dx/2;
             context.rect.width = start.width - dx;
           }
           if (dir.indexOf('e') > -1) {
             context.rect.width = start.width + dx;
           }
-
-          console.log(context.rect)
-
-          
-
+          context.update();
         };
         document.onmouseup = evt => {
           document.onmousemove = document.onmouseup = null;
@@ -107,8 +117,8 @@
           const px = evt.pageX;
           const py = evt.pageY;
           const rotate = Math.atan2(px - point.x, py - point.y) / Math.PI * 180;
-          this.rect.rotate =180 -rotate;
-          console.log(rotate);
+          context.rect.rotate =180 -rotate;
+          context.update();
         };
         document.onmouseup = evt => {
           document.onmousemove = document.onmouseup = null;
@@ -126,6 +136,16 @@
           left,
           top
         };
+      },
+      update(){
+        this.value.propertys={
+          ...this.value.propertys,
+          ...this.rect
+        };
+        this.$emit("input",{...this.value});
+        this.$emit("change",{...this.value});
+      },onClick(){
+
       }
     }
   };
