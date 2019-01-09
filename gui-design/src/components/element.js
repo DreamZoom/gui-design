@@ -10,10 +10,6 @@ class Element{
         }
     }
 
-    propertys={}
-
-    animations=[]
-
     render(){
         return `<div>hello</div>`;
     }
