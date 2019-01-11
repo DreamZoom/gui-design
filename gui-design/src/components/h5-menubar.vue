@@ -20,7 +20,7 @@
         </div>
         <div class="gui-menu-item">
             <popover placement="top-start"  trigger="click">
-                <gui-propertygrid :attributes="attributes"></gui-propertygrid>
+                
                 <i slot="reference" class="fa fa-cog"></i>
             </popover>
         </div>
