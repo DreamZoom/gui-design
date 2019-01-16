@@ -1,11 +1,13 @@
 <template>
     <div class="gui-h5-element" :style="style">
+        <component :is="component"/>
     </div>
 </template>
 <script>
+import Element from "./elements/Element"
     export default {
         props: {
-            model: Object
+            model: Element
         },
         mounted() {
         },
@@ -23,6 +25,12 @@
                     height: height + "px",
                     transform: 'rotateZ(' +rotate + 'deg)'
                 };
+            },
+            component(){
+                console.log(this.model.render());
+                return {
+                    template:this.model.render()
+                }
             }
         }
     }
@@ -31,5 +39,6 @@
 .gui-h5-element{
     position: absolute;
     background: #000;
+    color: beige;
 }
 </style>

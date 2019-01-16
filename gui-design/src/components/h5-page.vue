@@ -1,20 +1,9 @@
 <template>
   <div class="gui-h5-page" @click="unselect">
-    <div class="gui-h5-page-wapper">
+    <div class="gui-h5-page-wapper" :style="{width:width+'px',height:height+'px'}">
       <gui-h5-element v-for="(item,i) in page.elements" :key="i" :model="item" @click.native.stop="select(item,i)"> </gui-h5-element>
     </div>
     <gui-h5-drag v-model="page.elements[element_selected_index]" v-if="dragable" @change="update"></gui-h5-drag>
-    <div class="gui-h5-page-actions" v-if="editable">
-      <div class="action-item">
-        <i class="fa fa-arrow-up"></i>
-      </div>
-      <div class="action-item">
-        <i class="fa fa-arrow-down"></i>
-      </div>
-      <div class="action-item">
-        <i class="fa fa-cog"></i>
-      </div>
-    </div>
   </div>
 </template>
 <script>
@@ -28,6 +17,14 @@
       editable: {
         type: Boolean,
         default: false
+      },
+      width: {
+        type: Number,
+        default: 320
+      },
+      height: {
+        type: Number,
+        default: 568
       }
     },
     mounted() {
@@ -44,8 +41,15 @@
         return this.element_selected_index > -1 && this.editable;
       }
     },
+    watch: {
+      value(v, o) {
+        this.init();
+      }
+    },
     methods: {
       init() {
+        this.page = this.value;
+        this.element_selected_index = -1;
         const page = this.page;
         page.elements = page.elements || [];
       },
@@ -64,7 +68,7 @@
       select(item, i) {
         if (!this.editable) return;
         this.element_selected_index = i;
-        this.$emit("select",item);
+        this.$emit("select", item);
       },
       unselect() {
         this.element_selected_index = -1;
@@ -86,10 +90,5 @@
     height: 100%;
     background-color: aliceblue;
     overflow: hidden;
-  }
-  .gui-h5-page-actions {
-    position: absolute;
-    left: 100%;
-    top: 50%;
   }
 </style>

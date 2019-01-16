@@ -1,4 +1,4 @@
-import Element from "./element";
+import Element from "./Element";
 class TextElement extends Element{
     constructor(){
 
@@ -9,7 +9,8 @@ class TextElement extends Element{
     }
 
     render(){
-        return `<div>hello</div>`;
+        var p=this.propertys;
+        return `<div>${p.text}</div>`;
     }
 
     

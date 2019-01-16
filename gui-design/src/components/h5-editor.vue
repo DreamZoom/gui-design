@@ -3,24 +3,24 @@
         <div class="gui-h5-editor-tools">
             <div class="h5-tool-item" v-for="(item,i) in tools" @click="tools_selected_index=i" :key="i" :class="tools_actived(item,i)">{{item.text}}</div>
         </div>
-        <gui-h5-menubar></gui-h5-menubar>
-        <table>
-            <tr>
-                <td valign="top">
-                    <div class="gui-h5-editor-main" :style="editor_style">
-                        <div class="gui-h5-editor-main-page" :class="{actived:page_selected_index==i}" v-for="(item,i) in pages" :key="i" :style="page_style" @click="evt=>{onPageClick(evt,i)}">
-                            <gui-h5-page :editable="page_selected_index==i" v-model="pages[i]" ref="page" @select="onElementSelect"></gui-h5-page>
-                        </div>
-                        <div class="gui-h5-editor-addpage" @click="addPage">+</div>
-                    </div>
-                </td>
-                <td valign="top">
-                    <div class="property-panel">
-                        <gui-property-grid :attributes="attributes" v-model="element_selected" v-if="element_selected"></gui-property-grid>
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <div class="gui-h5-editor-wapper">
+            <div class="gui-h5-slider" :style="{height:height+'px'}">
+                 <div class="page-item" v-for="(page,i) in pages" :class="{actived:page_selected_index==i}" :key="i"  @click="evt=>{onPageClick(evt,i)}">
+                     第{{i+1}}页
+                 </div>
+                 <div class="page-item" @click="addPage">新页面</div>
+            </div>
+            <div class="gui-h5-editor-main" :style="editor_style"  @click="evt=>{addElement(evt,page_selected_index)}">
+                <div class="gui-h5-editor-main-page" v-if="page_selected_index>=0" >
+                    <gui-h5-page :editable="true" v-model="pages[page_selected_index]" :width="width" :height="height" ref="page" @select="onElementSelect"></gui-h5-page>
+                </div>              
+            </div>
+            <div class="gui-h5-rightbox">
+                <div class="property-panel">
+                    <gui-property-grid :attributes="attributes" v-model="element_selected.propertys" v-if="element_selected"></gui-property-grid>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -61,12 +61,8 @@
                 tools_selected_index: -1,
                 pages: [],
                 page_selected_index: -1,
-                attributes: [{
-                    text: "文本",
-                    type: 'text'
-                }],
-
-                element_selected:null
+                attributes: [],
+                element_selected: null
             }
         },
         mounted() {},
@@ -82,7 +78,7 @@
                 const y = evt.offsetY;
                 console.log(evt);
                 if (this.tools_selected_index > -1) {
-                    this.$refs.page[i].addElement({
+                    this.$refs.page.addElement({
                         x,
                         y
                     });
@@ -91,7 +87,7 @@
             },
             onPageClick(evt, i) {
                 this.page_selected_index = i;
-                this.addElement(evt, i);
+                console.log(this.page_selected_index);
             },
             tools_actived(tool, i) {
                 if (this.tools_selected_index == i) {
@@ -99,8 +95,10 @@
                 }
                 return "";
             },
-            onElementSelect(el){
-                this.element_selected=el;
+            onElementSelect(el) {
+                this.element_selected = el;
+                console.log(el);    
+                this.attributes=el.attributes;
             }
         }
     }
@@ -112,13 +110,13 @@
         outline: 1px solid #ccc;
     }
     .gui-h5-editor ::-webkit-scrollbar {
-        width: 12px;
-        height: 12px;
+        width: 6px;
+        height: 6px;
     }
     .gui-h5-editor ::-webkit-scrollbar-thumb {
         background: #c5c5c5;
-        border-radius: 10px;
-        border: whiteSmoke solid 3px;
+        border-radius: 6px;
+        border: whiteSmoke solid 1px;
     }
     .gui-h5-editor ::-webkit-scrollbar-track {
         background: whiteSmoke;
@@ -134,7 +132,8 @@
     .gui-h5-editor-main {
         padding: 20px;
         background-color: #ebebeb;
-        height: 650px;
+        margin-left: 200px;
+        margin-right: 200px;
         overflow-y: auto;
     }
     .h5-tool-item {
@@ -147,25 +146,45 @@
         background: #eeeeee;
         cursor: default;
     }
-    .gui-h5-editor-main-page {
+    .gui-h5-editor-wapper {
+        position: relative;
+    }
+    .gui-h5-slider {
+        position: absolute;
+        width: 200px;
+        top: 0px;
+        bottom: 0px;
+        overflow-y: auto;
+        background-color: #fff;
+    }
+    .gui-h5-slider .page-item{
+        font-size: 14px;
         text-align: center;
+        background: #fff;
+        color: #444;
+        padding: 10px;
+    }
+    .gui-h5-slider .page-item:hover,.gui-h5-slider .page-item.actived {
+        color: #000;
+        background: #ddd;
+        cursor: pointer;
+    }
+    .gui-h5-rightbox{
+        position: absolute;
+        right: 0px;
+        width: 200px;
+        top: 0px;
+        bottom: 0px;
     }
     .gui-h5-editor-main .gui-h5-editor-main-page {
         margin-top: 20px;
         margin-bottom: 40px;
     }
+    .gui-h5-editor-main-page {
+        text-align: center;
+    }
     .gui-h5-editor-main-page.actived {
         outline: 1px solid #59c7f9;
     }
-    .gui-h5-editor-addpage {
-        font-size: 90px;
-        padding: 20px;
-        text-align: center;
-        background: #fff;
-        color: #ccc;
-    }
-    .gui-h5-editor-addpage:hover {
-        color: #888;
-        cursor: pointer;
-    }
+ 
 </style>

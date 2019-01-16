@@ -142,10 +142,11 @@
           ...this.value.propertys,
           ...this.rect
         };
-        this.$emit("input",{...this.value});
-        this.$emit("change",{...this.value});
-      },onClick(){
-
+        this.$emit("input",this.value);
+        this.$emit("change",this.value);
+      },
+      onClick(){
+        console.log("stop pop event");
       }
     }
   };
@@ -153,7 +154,7 @@
 <style>
   .gui-h5-dragbox {
     position: absolute;
-    background: #ff0000;
+    background: rgba(red, green, blue, 0);
     left: 0px;
     top: 0px;
     width: 100px;

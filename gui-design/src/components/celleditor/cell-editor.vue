@@ -1,9 +1,9 @@
 <template>
     <div class="gui-cell-editor">
-        <gui-input-number v-if="p.type=='number'" size="mini" v-model="value"></gui-input-number>
-        <gui-input v-if="p.type=='text'" v-model="value" size="mini"></gui-input>
-        <gui-color-picker v-if="p.type=='color'" v-model="value" size="mini" popper-class="gui-cell-editor-picker"></gui-color-picker>
-        <gui-upload v-if="p.type=='image'" class="gui-image-uploader" action="http://image.service.sqhm.cn/upload" :show-file-list="false" :on-success="handleUploadSuccess">
+        <gui-input-number v-if="type=='number'" size="mini" :value="value"  @change="handleChanegInput"></gui-input-number>
+        <gui-input v-if="type=='text'" :value="value" size="mini"  @change="handleChanegInput"></gui-input>
+        <gui-color-picker v-if="type=='color'" :value="value" size="mini" popper-class="gui-cell-editor-picker"  @change="handleChanegInput"></gui-color-picker>
+        <gui-upload v-if="type=='image'" class="gui-image-uploader" action="http://image.service.sqhm.cn/upload" :show-file-list="false" :on-success="handleUploadSuccess">
             <img v-if="value" :src="value" class="gui-image">
             <span v-else class="gui-image-uploader-icon">+</span>
         </gui-upload>
@@ -24,7 +24,8 @@
             'gui-upload': Upload
         },
         props: {
-            value: Object
+            type:String,
+            value: null
         },
         data() {
             return {
@@ -35,6 +36,9 @@
             }
         },
         methods:{
+            handleChanegInput(value){
+                this.$emit("input",value);
+            },
             handleUploadSuccess(res, file){
                 this.$emit("input",res.data.fileUrl);
             }
