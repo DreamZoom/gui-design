@@ -1,17 +1,11 @@
 <template>
     <div>
         <table class="gui-property-grid">
-            <thead cellspacing="0px" cellpadding="0px" border="0px">
-                <tr>
-                    <th class="name">属性</th>
-                    <th class="value">值</th>
-                </tr>
-            </thead>
             <tbody>
                 <tr v-for="(item,i) in attributes" :key="i">
-                    <td><span class="gui-property-grid-label">{{item.label}}</span></td>
+                    <td class="name"><span class="gui-property-grid-label">{{item.label}}</span></td>
                     <td>
-                        <gui-cell-editor :type="item.type" v-model="value[item.name]"></gui-cell-editor>
+                        <gui-cell-editor :type="item.type" v-model="value[item.name]" :meta="item.meta"></gui-cell-editor>
                     </td>
                 </tr>
             </tbody>
@@ -49,7 +43,7 @@
     .gui-property-grid thead {
         background-color: #eee;
     }
-    .gui-property-grid thead .name {
+    .gui-property-grid .name {
         width: 100px;
     }
     .gui-property-grid-label{

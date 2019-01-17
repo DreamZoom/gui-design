@@ -7,6 +7,7 @@ class Element{
         this.addProperty('height','number',{},'高度',100);
         this.addProperty('rotate','number',{},'旋转',0);
         this.addProperty('backgroundColor','color',{},'背景色','#ccc');
+        this.addProperty('color','color',{},'前景色','#000');
 
     }
 
@@ -24,6 +25,29 @@ class Element{
         return `<div>hello</div>`;
     }
 
+
+    getPostionStyle(){
+        const {
+            x = 0, y = 0, width = 100, height = 100, rotate = 0
+        } = this.propertys;
+        const left = x - width / 2;
+        const top = y - height / 2;
+        return {
+            left: left + "px",
+            top: top + "px",
+            width: width + "px",
+            height: height + "px",
+            transform: 'rotateZ(' +rotate + 'deg)'
+        }
+    }
+
+    getStyle(){
+        const property = this.propertys;
+        return {
+            backgroundColor:property.backgroundColor,
+            color:property.color
+        }
+    }
     
 }
 

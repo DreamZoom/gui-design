@@ -5,26 +5,44 @@
         </div>
         <div class="gui-h5-editor-wapper">
             <div class="gui-h5-slider" :style="{height:height+'px'}">
-                 <div class="page-item" v-for="(page,i) in pages" :class="{actived:page_selected_index==i}" :key="i"  @click="evt=>{onPageClick(evt,i)}">
-                     第{{i+1}}页
-                 </div>
-                 <div class="page-item" @click="addPage">新页面</div>
+                <div class="page-item" v-for="(page,i) in pages" :class="{actived:page_selected_index==i}" :key="i" @click="evt=>{onPageClick(evt,i)}">
+                    <span class="number">{{i+1}}</span> <span class="text">第{{i+1}}页</span>
+                </div>
+                <div class="page-item" @click="addPage">新页面</div>
             </div>
-            <div class="gui-h5-editor-main" :style="editor_style"  @click="evt=>{addElement(evt,page_selected_index)}">
-                <div class="gui-h5-editor-main-page" v-if="page_selected_index>=0" >
+            <div class="gui-h5-editor-main" :style="editor_style" @click="evt=>{addElement(evt,page_selected_index)}">
+                <div class="gui-h5-editor-main-page" v-if="page_selected_index>=0">
                     <gui-h5-page :editable="true" v-model="pages[page_selected_index]" :width="width" :height="height" ref="page" @select="onElementSelect"></gui-h5-page>
-                </div>              
+                </div>
             </div>
             <div class="gui-h5-rightbox">
                 <div class="property-panel">
-                    <gui-property-grid :attributes="attributes" v-model="element_selected.propertys" v-if="element_selected"></gui-property-grid>
+                    <gui-tabs v-model="tabs_active" type="card">
+                        <gui-tab-pane label="属性" name="first">
+                            <gui-property-grid :attributes="attributes" v-model="element_selected.propertys" v-if="element_selected"></gui-property-grid>
+                        </gui-tab-pane>
+                        <gui-tab-pane label="动画" name="second">
+                            <gui-h5-animation-editor></gui-h5-animation-editor>
+                        </gui-tab-pane>
+                    </gui-tabs>
+                    
+
+                    
                 </div>
             </div>
         </div>
     </div>
 </template>
 <script>
+ import {
+        Tabs,
+        TabPane,
+    } from "element-ui"
     export default {
+        components:{
+            'gui-tabs':Tabs,
+            'gui-tab-pane':TabPane
+        },
         props: {
             width: {
                 type: Number,
@@ -62,7 +80,8 @@
                 pages: [],
                 page_selected_index: -1,
                 attributes: [],
-                element_selected: null
+                element_selected: null,
+                tabs_active:""
             }
         },
         mounted() {},
@@ -78,9 +97,11 @@
                 const y = evt.offsetY;
                 console.log(evt);
                 if (this.tools_selected_index > -1) {
+                    const tool=this.tools[this.tools_selected_index];
                     this.$refs.page.addElement({
                         x,
-                        y
+                        y,
+                        type:tool.type
                     });
                     this.tools_selected_index = -1;
                 }
@@ -97,8 +118,8 @@
             },
             onElementSelect(el) {
                 this.element_selected = el;
-                console.log(el);    
-                this.attributes=el.attributes;
+                console.log(el);
+                this.attributes = el.attributes;
             }
         }
     }
@@ -157,19 +178,37 @@
         overflow-y: auto;
         background-color: #fff;
     }
-    .gui-h5-slider .page-item{
+    .gui-h5-slider .page-item {
         font-size: 14px;
-        text-align: center;
+        /* text-align: center; */
         background: #fff;
         color: #444;
         padding: 10px;
     }
-    .gui-h5-slider .page-item:hover,.gui-h5-slider .page-item.actived {
+    .gui-h5-slider .page-item:hover,
+    .gui-h5-slider .page-item.actived {
         color: #000;
         background: #ddd;
         cursor: pointer;
     }
-    .gui-h5-rightbox{
+    .page-item .number {
+        background-color: #ccc;
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        text-align: center;
+        border-radius: 12px;
+        color: #fff;
+    }
+    .page-item .text {
+        display: inline-block;
+        height: 24px;
+        line-height: 24px;
+        text-align: center;
+        margin-left: 20px;
+    }
+    .gui-h5-rightbox {
         position: absolute;
         right: 0px;
         width: 200px;
@@ -186,5 +225,4 @@
     .gui-h5-editor-main-page.actived {
         outline: 1px solid #59c7f9;
     }
- 
 </style>

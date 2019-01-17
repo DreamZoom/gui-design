@@ -3,7 +3,7 @@ class TextElement extends Element{
     constructor(){
 
         super();
-        this.addProperty('text','text',{},'文本',"");
+        this.addProperty('text','text',{},'文本',"请输入文本");
         
 
     }

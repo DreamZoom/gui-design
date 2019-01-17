@@ -13,18 +13,9 @@ import Element from "./elements/Element"
         },
         computed: {
             style() {
-                const {
-                    x = 0, y = 0, width = 100, height = 100, rotate = 0
-                } = this.model.propertys;
-                const left = x - width / 2;
-                const top = y - height / 2;
-                return {
-                    left: left + "px",
-                    top: top + "px",
-                    width: width + "px",
-                    height: height + "px",
-                    transform: 'rotateZ(' +rotate + 'deg)'
-                };
+                const postion=this.model.getPostionStyle();
+                const style = this.model.getStyle();
+                return {...postion,...style};
             },
             component(){
                 console.log(this.model.render());
@@ -38,7 +29,5 @@ import Element from "./elements/Element"
 <style>
 .gui-h5-element{
     position: absolute;
-    background: #000;
-    color: beige;
 }
 </style>

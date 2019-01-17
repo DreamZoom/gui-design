@@ -8,6 +8,7 @@
 </template>
 <script>
   import TextElement from "./elements/TextElement";
+  import ImageElement from "./elements/ImageElement";
   export default {
     props: {
       value: {
@@ -57,10 +58,16 @@
         this.$forceUpdate();
       },
       addElement(options) {
-        const element = new TextElement();
+        let element = null;//new TextElement();
+        if(options.type=="image"){
+          element =new ImageElement();
+        }else{
+          element =new TextElement();
+        }
         element.propertys = {
           ...element.propertys,
-          ...options
+          x:options.x,
+          y:options.y
         };
         this.page.elements.push(element);
         console.log(element);
