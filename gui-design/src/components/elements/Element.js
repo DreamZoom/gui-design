@@ -9,6 +9,8 @@ class Element{
         this.addProperty('backgroundColor','color',{},'背景色','#ccc');
         this.addProperty('color','color',{},'前景色','#000');
 
+        this.animations=[];
+
     }
 
     addProperty(name,type,meta,label,defaultValue){
@@ -47,6 +49,19 @@ class Element{
             backgroundColor:property.backgroundColor,
             color:property.color
         }
+    }
+
+    getAnimations(){
+        var animations = this.animations||[];
+        return animations.map(item=>{
+            // return {
+            //     animationName:item.animationName ,
+            //     animationDelay:item.animationDelay+"s",
+			//     animationDuration:item.animationDuration+"s",
+			//     animationIterationCount:item.animationIterationCount==0?"infinite":item.animationIterationCount,
+            // }
+            return `${item.animationName} ${item.animationDuration}s ${item.animationDelay}s ${item.animationIterationCount==0?"infinite":item.animationIterationCount}`;
+        });
     }
     
 }

@@ -37,7 +37,7 @@
 <style>
     .gui-property-grid {
         width: 100%;
-        border: #eee solid 1px;
+        /* border: #eee solid 1px; */
         font-size: 12px;
     }
     .gui-property-grid thead {

@@ -1,15 +1,19 @@
 <template>
-    <div style="padding:10px" class="gui-animate-editor">
+    <div style="padding:0 10px" class="gui-animate-editor">
         <gui-collapse v-model="activeNames">
             <gui-collapse-item v-for="(item,i) in animations" :key="i" :name="i">
                 <template slot="title">
-                   <span>动画{{i+1}}</span><span class="delete">X</span>
+                    <div class="animation-item-header">
+                        <span>动画{{i+1}}</span><span class="gui-animate-action"><i class="fa fa-trash-o" @click.stop="deleteAnimate(i)"></i><i class="fa fa-play-circle-o" @click.stop="playAnimate(i)"></i></span>
+                    </div>
+                   
                 </template>
                 <gui-property-grid :attributes="attributes" v-model="animations[i]"></gui-property-grid>
             </gui-collapse-item>
         </gui-collapse>
         <div class="gui-actions">
-            <gui-button @click="addAnimate">添加动画</gui-button>
+            <gui-button @click="addAnimate" round size="mini">添加动画</gui-button>
+            <gui-button @click="playAnimate(-1)" round size="mini">播放动画</gui-button>
         </div>
     </div>
 </template>
@@ -25,10 +29,15 @@
             'gui-collapse-item': CollapseItem,
             'gui-button': Button
         },
+        props:{
+            value:{
+                type:Array,
+                required:true
+            }
+        },
         data() {
             return {
                 activeNames: [],
-                animations: [],
                 attributes: []
             };
         },
@@ -37,7 +46,7 @@
             var range = [];
             range.push({
                 label: "淡入",
-                value: "fadeIn"
+                value: "bounce"
             });
             range.push({
                 label: "淡出",
@@ -75,6 +84,12 @@
             });
             this.attributes = attributes;
         },
+        computed:{
+            animations(){
+                this.value = this.value||[];
+                return this.value;
+            }
+        },
         methods: {
             addAnimate() {
                 this.animations.push({
@@ -84,15 +99,37 @@
                     animationIterationCount: 1,
                     animationDirection: false
                 });
+                this.$emit("input",this.value);
+            },
+            deleteAnimate(i){
+               this.animations.splice(i,1);
+               console.log(this.value);
+               this.$emit("input",this.value);
+            },
+            playAnimate(i){
+                this.$emit("play-animate",i);
             }
         }
     }
 </script>
 <style>
+.animation-item-header{
+    flex: 1;
+}
 .gui-animate-editor .delete{
     margin-left: 20px;
     display: inline-block;
     width: 24px;
+}
+.gui-animate-editor .gui-animate-action{
+    float: right;
+}
+.gui-animate-editor .gui-animate-action i{
+    margin-right: 5px;
+    color: #888;
+}
+.gui-animate-editor .gui-animate-action i:hover{
+    color: #000;
 }
     .gui-actions {
         text-align: center;

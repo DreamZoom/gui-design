@@ -9,4 +9,7 @@ export default {
   name: 'App'
 }
 </script>
+<style>
+@import './assets/animate.css';
+</style>
 

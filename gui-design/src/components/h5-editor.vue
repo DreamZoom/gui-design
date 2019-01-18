@@ -5,12 +5,15 @@
         </div>
         <div class="gui-h5-editor-wapper">
             <div class="gui-h5-slider" :style="{height:height+'px'}">
-                <div class="page-item" v-for="(page,i) in pages" :class="{actived:page_selected_index==i}" :key="i" @click="evt=>{onPageClick(evt,i)}">
+                <div class="page-item" v-for="(page,i) in pages" :class="{actived:page_selected_index==i}" :key="i" @click="evt=>{onPageItemClick(evt,i)}">
                     <span class="number">{{i+1}}</span> <span class="text">第{{i+1}}页</span>
                 </div>
-                <div class="page-item" @click="addPage">新页面</div>
+                <div style="text-align:center;padding:10px">
+                    <gui-button @click="addPage">新页面</gui-button> 
+                </div>
+                
             </div>
-            <div class="gui-h5-editor-main" :style="editor_style" @click="evt=>{addElement(evt,page_selected_index)}">
+            <div class="gui-h5-editor-main" :style="editor_style" @click="evt=>{onPageClick(evt,page_selected_index)}">
                 <div class="gui-h5-editor-main-page" v-if="page_selected_index>=0">
                     <gui-h5-page :editable="true" v-model="pages[page_selected_index]" :width="width" :height="height" ref="page" @select="onElementSelect"></gui-h5-page>
                 </div>
@@ -22,7 +25,7 @@
                             <gui-property-grid :attributes="attributes" v-model="element_selected.propertys" v-if="element_selected"></gui-property-grid>
                         </gui-tab-pane>
                         <gui-tab-pane label="动画" name="second">
-                            <gui-h5-animation-editor></gui-h5-animation-editor>
+                            <gui-h5-animate-editor v-model="element_selected.animations" v-if="element_selected" @play-animate="playAnimate"></gui-h5-animate-editor>
                         </gui-tab-pane>
                     </gui-tabs>
                     
@@ -37,11 +40,13 @@
  import {
         Tabs,
         TabPane,
+        Button
     } from "element-ui"
     export default {
         components:{
             'gui-tabs':Tabs,
-            'gui-tab-pane':TabPane
+            'gui-tab-pane':TabPane,
+            'gui-button':Button
         },
         props: {
             width: {
@@ -81,7 +86,7 @@
                 page_selected_index: -1,
                 attributes: [],
                 element_selected: null,
-                tabs_active:""
+                tabs_active:"first"
             }
         },
         mounted() {},
@@ -107,6 +112,12 @@
                 }
             },
             onPageClick(evt, i) {
+                this.addElement(evt,i);
+                this.page_selected_index = i;
+                this.element_selected=null;
+                console.log(this.page_selected_index);
+            },
+            onPageItemClick(evt, i) {
                 this.page_selected_index = i;
                 console.log(this.page_selected_index);
             },
@@ -120,11 +131,15 @@
                 this.element_selected = el;
                 console.log(el);
                 this.attributes = el.attributes;
+            },
+            playAnimate(index){
+                this.$refs.page.playAnimate(index);
             }
         }
     }
 </script>
 <style scoped>
+    
     .gui-h5-editor {
         display: inline-block;
         position: relative;
@@ -177,6 +192,7 @@
         bottom: 0px;
         overflow-y: auto;
         background-color: #fff;
+        height: 100%;
     }
     .gui-h5-slider .page-item {
         font-size: 14px;
@@ -200,6 +216,7 @@
         text-align: center;
         border-radius: 12px;
         color: #fff;
+        font-size: 12px;
     }
     .page-item .text {
         display: inline-block;
