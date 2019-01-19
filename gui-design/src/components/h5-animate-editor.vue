@@ -23,6 +23,7 @@
         CollapseItem,
         Button
     } from "element-ui"
+    import animate from "./animate";
     export default {
         components: {
             'gui-collapse': Collapse,
@@ -56,7 +57,7 @@
                 name: "animationName",
                 type: "select",
                 meta: {
-                    range: range
+                    range: animate.animates
                 },
                 label: "动画",
                 defaultValue: ""
