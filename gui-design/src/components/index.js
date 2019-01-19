@@ -8,6 +8,7 @@ import celleditor from "./celleditor/cell-editor.vue";
 import propertygrid from "./property-grid";
 
 import h5_animate_editor from "./h5-animate-editor";
+import template_editor from "./template-editor";
 
 const components={
     'h5-page':h5_page,
@@ -17,7 +18,8 @@ const components={
     'h5-menubar':h5_menubar,
     'property-grid':propertygrid,
     'cell-editor':celleditor,
-    'h5-animate-editor':h5_animate_editor
+    'h5-animate-editor':h5_animate_editor,
+    'template-editor':template_editor
 }
 
 
