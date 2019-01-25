@@ -3,6 +3,7 @@ import h5_editor from "./h5-editor";
 import h5_drag from "./h5-drag";
 import h5_element from "./h5-element";
 import h5_menubar from "./h5-menubar";
+import h5_viewer from "./h5-viewer";
 
 import celleditor from "./celleditor/cell-editor.vue";
 import propertygrid from "./property-grid";
@@ -16,6 +17,7 @@ const components={
     'h5-drag':h5_drag,
     'h5-element':h5_element,
     'h5-menubar':h5_menubar,
+    'h5-viewer':h5_viewer,
     'property-grid':propertygrid,
     'cell-editor':celleditor,
     'h5-animate-editor':h5_animate_editor,

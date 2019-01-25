@@ -1,6 +1,6 @@
 <template>
   <div class="gui-h5-page" @click="unselect">
-    <div class="gui-h5-page-wapper" :style="{width:width+'px',height:height+'px'}">
+    <div class="gui-h5-page-wapper" :style="style">
       <gui-h5-element v-for="(item,i) in page.elements" :key="i" :model="item" @click.native.stop="select(item,i)" ref="elements"> </gui-h5-element>
     </div>
     <gui-h5-drag v-model="page.elements[element_selected_index]" v-if="dragable" @change="update"></gui-h5-drag>
@@ -9,10 +9,11 @@
 <script>
   import TextElement from "./elements/TextElement";
   import ImageElement from "./elements/ImageElement";
+  import PageElement from "./elements/PageElement";
   export default {
     props: {
       value: {
-        type: Object,
+        type: PageElement,
         required: true
       },
       editable: {
@@ -40,6 +41,13 @@
     computed: {
       dragable() {
         return this.element_selected_index > -1 && this.editable;
+      },
+      style(){
+        const css = this.page.getStyle();
+        return {
+          width:this.width+'px',height:this.height+'px',
+          ...css
+        }
       }
     },
     watch: {

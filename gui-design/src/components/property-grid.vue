@@ -44,7 +44,7 @@
         background-color: #eee;
     }
     .gui-property-grid .name {
-        width: 100px;
+        width: 60px;
     }
     .gui-property-grid-label{
         display: inline-block;

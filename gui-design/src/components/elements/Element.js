@@ -6,7 +6,8 @@ class Element{
         this.addProperty('width','number',{},'宽度',100);
         this.addProperty('height','number',{},'高度',100);
         this.addProperty('rotate','number',{},'旋转',0);
-        this.addProperty('backgroundColor','color',{},'背景色','#ccc');
+
+        this.addProperty('backgroundColor','color',{},'背景色','#fff');
         this.addProperty('color','color',{},'前景色','#000');
 
         this.animations=[];
@@ -21,6 +22,13 @@ class Element{
         this.propertys[name]=defaultValue;
         if(this.__proto__.attributes.some(item=>item.name==name)) return;
         this.__proto__.attributes.push({name,type,meta,label,defaultValue});
+    }
+
+    deleteProperty(name){
+        this.__proto__.attributes=this.__proto__.attributes||[];
+        if(this.__proto__.attributes.some(item=>item.name==name)) {
+            this.__proto__.attributes.splice(this.__proto__.attributes.findIndex(item => item.name === name), 1)
+        }
     }
 
     render(){

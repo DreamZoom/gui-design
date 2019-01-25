@@ -5,17 +5,16 @@
         </div>
         <div class="gui-h5-editor-wapper">
             <div class="gui-h5-slider" :style="{height:height+'px'}">
-                <div class="page-item" v-for="(page,i) in pages" :class="{actived:page_selected_index==i}" :key="i" @click="evt=>{onPageItemClick(evt,i)}">
+                <div class="page-item" v-for="(page,i) in model.pages" :class="{actived:page_selected_index==i}" :key="i" @click="evt=>{onPageItemClick(evt,i)}">
                     <span class="number">{{i+1}}</span> <span class="text">第{{i+1}}页</span>
                 </div>
                 <div style="text-align:center;padding:10px">
-                    <gui-button @click="addPage">新页面</gui-button> 
+                    <gui-button @click="addPage">新页面</gui-button>
                 </div>
-                
             </div>
             <div class="gui-h5-editor-main" :style="editor_style" @click="evt=>{onPageClick(evt,page_selected_index)}">
                 <div class="gui-h5-editor-main-page" v-if="page_selected_index>=0">
-                    <gui-h5-page :editable="true" v-model="pages[page_selected_index]" :width="width" :height="height" ref="page" @select="onElementSelect"></gui-h5-page>
+                    <gui-h5-page :editable="true" v-model="model.pages[page_selected_index]" :width="width" :height="height" ref="page" @select="onElementSelect"></gui-h5-page>
                 </div>
             </div>
             <div class="gui-h5-rightbox">
@@ -25,30 +24,31 @@
                             <gui-property-grid :attributes="attributes" v-model="element_selected.propertys" v-if="element_selected"></gui-property-grid>
                         </gui-tab-pane>
                         <gui-tab-pane label="动画" name="second">
-                            <gui-h5-animate-editor v-model="element_selected.animations" v-if="element_selected" @play-animate="playAnimate"></gui-h5-animate-editor>
+                            <gui-h5-animate-editor v-model="element_selected.animations" v-if="show_animation " @play-animate="playAnimate"></gui-h5-animate-editor>
                         </gui-tab-pane>
                     </gui-tabs>
-                    
-
-                    
                 </div>
             </div>
         </div>
     </div>
 </template>
 <script>
- import {
+    import {
         Tabs,
         TabPane,
         Button
     } from "element-ui"
+    import PageElement from "./elements/PageElement";
     export default {
-        components:{
-            'gui-tabs':Tabs,
-            'gui-tab-pane':TabPane,
-            'gui-button':Button
+        components: {
+            'gui-tabs': Tabs,
+            'gui-tab-pane': TabPane,
+            'gui-button': Button
         },
         props: {
+            value: {
+                type: Object
+            },
             width: {
                 type: Number,
                 default: 320
@@ -70,6 +70,15 @@
                     width: this.width + "px",
                     height: this.height + "px"
                 }
+            },
+            model(){
+                var h5 = this.getModel();
+                return h5;
+            },
+            show_animation(){
+                var show = this.element_selected && (this.element_selected.constructor.name!=="PageElement");
+                console.log(show);
+                return show;
             }
         },
         data() {
@@ -81,40 +90,64 @@
                     text: "图片",
                     type: "image"
                 }],
-                tools_selected_index: -1,
-                pages: [],
                 page_selected_index: -1,
+                tools_selected_index: -1,
                 attributes: [],
                 element_selected: null,
-                tabs_active:"first"
+                tabs_active: "first"
             }
         },
-        mounted() {},
+        mounted() {
+
+            var h5 = this.getModel();
+
+        },
         methods: {
+            getModel(){
+                this.value = this.value ||{}
+                this.value.pages=this.value.pages||[];
+                return this.value;
+            },
+            updateModel(){
+                this.$emit("input",this.value);
+            },
+            activePage(){
+                const page= this.model.pages[this.page_selected_index];
+                this.element_selected=page;
+                console.log(page.constructor);
+                this.attributes = page.attributes;
+            },
             addPage() {
-                this.pages.push({
-                    elements: []
-                });
-                this.page_selected_index = this.pages.length - 1;
+                this.model.pages.push(new PageElement());
+                this.page_selected_index = this.model.pages.length - 1;
+                this.updateModel();
+                this.activePage();
             },
             addElement(evt, i) {
                 const x = evt.offsetX;
                 const y = evt.offsetY;
                 console.log(evt);
                 if (this.tools_selected_index > -1) {
-                    const tool=this.tools[this.tools_selected_index];
+                    const tool = this.tools[this.tools_selected_index];
                     this.$refs.page.addElement({
                         x,
                         y,
-                        type:tool.type
+                        type: tool.type
                     });
                     this.tools_selected_index = -1;
+                    this.updateModel();
                 }
             },
             onPageClick(evt, i) {
-                this.addElement(evt,i);
-                this.page_selected_index = i;
-                this.element_selected=null;
+                if(this.tools_selected_index>-1){
+                    this.addElement(evt, i);
+                }
+                else{
+                    this.page_selected_index = i;
+                    
+                    this.activePage();
+                }
+                
                 console.log(this.page_selected_index);
             },
             onPageItemClick(evt, i) {
@@ -132,14 +165,13 @@
                 console.log(el);
                 this.attributes = el.attributes;
             },
-            playAnimate(index){
+            playAnimate(index) {
                 this.$refs.page.playAnimate(index);
             }
         }
     }
 </script>
 <style scoped>
-    
     .gui-h5-editor {
         display: inline-block;
         position: relative;
