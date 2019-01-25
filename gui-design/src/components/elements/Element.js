@@ -23,6 +23,10 @@ class Element{
         if(this.__proto__.attributes.some(item=>item.name==name)) return;
         this.__proto__.attributes.push({name,type,meta,label,defaultValue});
     }
+    setValue(name,value){
+        this.propertys=this.propertys||{};
+        this.propertys[name]=value;
+    }
 
     deleteProperty(name){
         this.__proto__.attributes=this.__proto__.attributes||[];

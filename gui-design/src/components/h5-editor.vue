@@ -208,11 +208,16 @@
         padding: 5px;
         display: inline-block;
         font-size: 12px;
+        border: 1px solid #ccc;
+        margin-left: 10px;
+        border-radius: 5px;
+        padding: 5px 20px;
     }
     .h5-tool-item:hover,
     .h5-tool-item.actived {
         background: #eeeeee;
         cursor: default;
+        border: 1px solid #f00;
     }
     .gui-h5-editor-wapper {
         position: relative;
