@@ -90,7 +90,8 @@
         this.$emit("unselect");
       },
       playAnimate(index){
-        if(this.element_selected_index>-1&&this.element_selected_index<this.$refs.elements.length){
+        if(!this.$refs.elements) return;
+        if(this.$refs.elements&&this.element_selected_index>-1&&this.element_selected_index<this.$refs.elements.length){
           this.$refs.elements[this.element_selected_index].playAnimate(index);
         }
         else{

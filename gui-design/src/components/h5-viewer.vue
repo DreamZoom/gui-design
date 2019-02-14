@@ -25,6 +25,8 @@
             swiperSlide
         },
         data() {
+
+            const context = this;
             return {
                 swiperOption: {
                     direction: 'vertical',
@@ -34,7 +36,14 @@
                     pagination: {
                         el: '.swiper-pagination',
                         clickable: true
-                    }
+                    },
+                    on: {
+                        transitionEnd: function(evt) {
+                            console.log(evt);
+                            var index =this.activeIndex;
+                            context.playAnimation(index);
+                        },
+                    },
                 }
             }
         },
@@ -61,6 +70,10 @@
         methods: {
             getModel() {
                 return this.value || {};
+            },
+            playAnimation(i){
+                const page=this.$refs.page[i];
+                if(page) page.playAnimate();
             }
         }
     }

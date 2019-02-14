@@ -1,8 +1,12 @@
 <template>
     <div class="gui-h5-editor">
-        <div class="gui-h5-editor-tools">
-            <div class="h5-tool-item" v-for="(item,i) in tools" @click="tools_selected_index=i" :key="i" :class="tools_actived(item,i)">{{item.text}}</div>
+        <div class="gui-h5-editor-header">
+            <div class="gui-h5-editor-tools">
+                <div class="h5-tool-item" v-for="(item,i) in tools" @click="tools_selected_index=i" :key="i" :class="tools_actived(item,i)">{{item.text}}</div>
+            </div>
+            <div class="gui-h5-editor-setting"></div>
         </div>
+        
         <div class="gui-h5-editor-wapper">
             <div class="gui-h5-slider" :style="{height:height+'px'}">
                 <div class="page-item" v-for="(page,i) in model.pages" :class="{actived:page_selected_index==i}" :key="i" @click="evt=>{onPageItemClick(evt,i)}">
