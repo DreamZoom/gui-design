@@ -36,7 +36,12 @@
         props: {
             type: String,
             value: null,
-            meta:Object
+            meta:Object,
+            defaultValue:null,
+            required:{
+                type:Boolean,
+                default:false
+            }
         },
         data() {
             return {

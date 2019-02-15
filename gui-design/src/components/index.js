@@ -11,6 +11,9 @@ import propertygrid from "./property-grid";
 import h5_animate_editor from "./h5-animate-editor";
 import template_editor from "./template-editor";
 
+import fieldObject from "./fields/field-object.vue";
+import fieldArray from "./fields/field-array.vue";
+import template_form_editor from "./template-form-editor";
 const components={
     'h5-page':h5_page,
     'h5-editor':h5_editor,
@@ -21,7 +24,10 @@ const components={
     'property-grid':propertygrid,
     'cell-editor':celleditor,
     'h5-animate-editor':h5_animate_editor,
-    'template-editor':template_editor
+    'template-editor':template_editor,
+    'field-object':fieldObject,
+    'field-array':fieldArray,
+    'template-form-editor':template_form_editor
 }
 
 
